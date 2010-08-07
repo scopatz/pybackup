@@ -7,9 +7,11 @@ local-to-remote backup procedure. It has the ability to easily handle many
 directories that need to go to several places over a variety of secure protocols.  
 
 Currently, Pybackup supports the following file transfer systems:
+
   1. rsync
   2. git
   3. bzr (bazaar)
+
 More transfer mechanisms (such as hg, svn, scp) could be added with ease, if
 needed.  Each of these methods require that the local host and the remote 
 server be configured properly.  Additionally, public RSA keys for SSL must 
@@ -39,9 +41,12 @@ Usage
 
 At any time from the command line, you may backs up all of the folders listed 
 in ``folders.txt`` by running::
+
     $ pybackup
 
+
 Additionally, you may quickly edit ``folders.txt`` by running::
+
     $ pybackup -e 
 
 
