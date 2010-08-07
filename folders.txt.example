@@ -1,0 +1,15 @@
+RSYNC username remote.server.com
+/path/to/same/dir/
+/path/to/same/dir/and/delete/old/files/ D
+/path/to/local/dir/                     /path/on/remote/dir/
+/path/to/local/dir/                     /path/on/remote//and/delete/old/files/  D
+
+RSYNC anotherusername another.remote.server.com
+#/path/to/commented/out/dir/
+
+BAZAAR
+/path/to/repository/    lp:remote/repository/path
+
+GIT
+/path/to/repository/    
+/path/to/repository/with/message/   I am an autocommit, zOMG.   
