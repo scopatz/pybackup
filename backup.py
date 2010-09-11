@@ -66,7 +66,7 @@ def main():
 
             #Rsync the directory
             elif (REMOTE == "RSYNC") and (len(ls) == 1):
-                backup_dirs.append( rsync_dir(ls[0], ls[0], REMOTEUSER, REMOTEHOST) )
+                backup_dirs.append( RsyncDir(ls[0], ls[0], REMOTEUSER, REMOTEHOST) )
 
             elif (REMOTE == "RSYNC") and (len(ls) == 2):
                 if (ls[-1].upper() == "D") :
