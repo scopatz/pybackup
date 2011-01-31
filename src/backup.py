@@ -3,9 +3,9 @@ import os
 import subprocess
 from optparse import OptionParser
 
-from rsync_dir import RsyncDir
-from bzr_dir   import BazaarDir
-from git_dir   import GitDir
+from .rsync_dir import RsyncDir
+from .bzr_dir   import BazaarDir
+from .git_dir   import GitDir
 
 def main():
     parser = OptionParser()
