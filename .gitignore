@@ -2,3 +2,8 @@ folders.txt
 *.pyc
 *.save
 *.bak
+
+# Ignored directories
+build/
+dist/
+*.egg-info
