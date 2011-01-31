@@ -37,12 +37,12 @@ def main():
             print("EDITOR enviromental variable not set!")
             return
 
-        subprocess.call("{0} {1}/.backup/folders.txt".format(EDITOR, HOME), shell=True)
-        print("Edited configuration file {0}/.backup/folders.txt".format(HOME))
+        subprocess.call("{0} {1}/.config/pybackup/folders.txt".format(EDITOR, HOME), shell=True)
+        print("Edited configuration file {0}/.config/pybackup/folders.txt".format(HOME))
         return
 
     #Read in the file
-    with open('{0}/.backup/folders.txt'.format(HOME), 'r') as folderfile:
+    with open('{0}/.config/pybackup/folders.txt'.format(HOME), 'r') as folderfile:
         for line in folderfile:
             ls = line.split()
             if len(ls) == 0:
