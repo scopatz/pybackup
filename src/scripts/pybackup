@@ -1,0 +1,7 @@
+#!/usr/bin/env python3
+"""Terminal-based pybackup entry point."""
+
+from pybackup.backup import main
+
+main()
+
