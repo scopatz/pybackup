@@ -68,7 +68,7 @@ class S3Dir(object):
 
     def is_mounted(self):
         out = subprocess.check_output("mount", shell=True)
-        for line in out:
+        for line in out.splitlines():
             ls = line.split()
             if ls[0] == 's3fs' and ls[2] == self.mount_point:
                 return True
@@ -76,12 +76,16 @@ class S3Dir(object):
         
 
     def mount(self):
+        mntstr = "Mounting \033[1;36m{bucket!s}\033[1;32m at \033[1;35m{mount_point!s}\033[1;32m".format(**self.__dict__)
+        print("\033[1;32m{}\033[0m".format(mntstr))
         cmd = "s3fs {bucket} {mount_point} -o url=https://s3.amazonaws.com".format(**self.__dict__)
         rtn = subprocess.check_call(cmd, shell=True)
         return rtn
         
 
     def unmount(self):
+        unmntstr = "Unmounting \033[1;35m{mount_point!s}\033[1;32m".format(**self.__dict__)
+        print("\033[1;32m{}\033[0m".format(unmntstr))
         cmd = "fusermount -u {mount_point}".format(**self.__dict__)
         rtn = subprocess.check_call(cmd, shell=True)
         return rtn
