@@ -3,14 +3,26 @@ import time
 import subprocess
 
 class RsyncDir(object):
-    def __init__(self, ld, rd, df, ru, rh, *args, **kw):
-        self.localdir   = ld
-        self.remotedir  = rd
+    def __init__(self, *args, **kw):
+        self.localdir = args[0]
+
+        mid_args = args[1:-2]
+        if len(mid_args) == 0: 
+            self.remotedir = self.localdir
+            df = "N"
+        if len(mid_args) == 1: 
+            self.remotedir = mid_args[0] if len(mid_args[0]) != 1 else self.localdir
+            df = mid_args[0] if len(mid_args[0]) == 1 else "N"
+        elif len(mid_args) == 2:
+            self.remotedir = mid_args[0]
+            df = mid_args[1]
+        else:
+            raise ValueError("Too many arguments for " + repr(self.localdir))
 
         self.deleteflag = ((df.upper() == "D") and (not kw['NO_DELETE']))
 
-        self.remoteuser = ru
-        self.remotehost = rh
+        self.remoteuser = args[-2]
+        self.remotehost = args[-1]
         return
 
     def __str__(self):
@@ -18,7 +30,7 @@ class RsyncDir(object):
         s = s + "Remote Directory:\t{remotedir!s}\n"
         s = s + "Remote User:\t\t{remoteuser!s}\n"
         s = s + "Remote Host:\t\t{remotehost!s}\n"
-        s = s + "Remote Host:\t\t{deleteflag}\n"
+        s = s + "Delete Abandoned Files:\t\t{deleteflag}\n"
         return s.format(**self.__dict__)
 
     def backup(self):
