@@ -6,14 +6,16 @@ from optparse import OptionParser
 from .rsync_dir import RsyncDir
 from .bzr_dir   import BazaarDir
 from .git_dir   import GitDir
-from .s3_dir    import S3Dir
+from .s3_cmd_dir import S3CmdDir
+from .s3_rsync_dir import S3RsyncDir
 
 protocols = {
     "rsync": RsyncDir,
     "git": GitDir,
     "bzr": BazaarDir,
     "bazaar": BazaarDir,
-    "s3": S3Dir,
+    "s3cmd": S3CmdDir,
+    "s3rsync": S3RsyncDir,
     }
 
 def main():
