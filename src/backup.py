@@ -7,30 +7,37 @@ from .rsync_dir import RsyncDir
 from .bzr_dir   import BazaarDir
 from .git_dir   import GitDir
 
+protocols = {
+    "rsync": RsyncDir,
+    "git": GitDir,
+    "bzr": BazaarDir,
+    "bazaar": BazaarDir,
+    }
+
 def main():
     parser = OptionParser()
 
     parser.add_option("-n", "--no-delete", action="store_true", 
-        dest="NoDeleteAfter", default=False, 
+        dest="NO_DELETE", default=False, 
         help="Don't deleted orphaned files on remote machince after transfer.")
     parser.add_option("-e", "--edit", action="store_true", 
-        dest="Edit", default=False, 
+        dest="EDIT", default=False, 
         help="Open and edit the configuration file.")
 
     (options, args) = parser.parse_args()
 
-    #Iinitialize
+    # Initialize
     backup_dirs = []
 
-    REMOTE = ""
-
-    REMOTEUSER = ""
-    REMOTEHOST = ""
+    protocol_name = None
+    protocol_args = None
 
     HOME = os.getenv("HOME")
 
+    cmd_line_options = {'NO_DELETE': options.NO_DELETE}
+
     # Editor mode
-    if options.Edit:
+    if options.EDIT:
         EDITOR = os.getenv("EDITOR")
 
         if EDITOR == "":
@@ -43,68 +50,26 @@ def main():
 
     #Read in the file
     with open('{0}/.config/pybackup/folders.txt'.format(HOME), 'r') as folderfile:
-        for line in folderfile:
-            ls = line.split()
-            if len(ls) == 0:
-                REMOTE = ""
-                REMOTEUSER = ""
-                REMOTEHOST = ""
-            elif ls[0][0] == "#":
-                continue
+        lines = [line.strip() for line in folderfile]
+    lines = [line.partition("#")[0] for line in lines if not line.startswith("#")]
 
-            #Determine REMOTE type            
-            elif ls[0].upper() == "RSYNC":
-                REMOTE     = "RSYNC"
-                REMOTEUSER = ls[1]
-                REMOTEHOST = ls[2]
-            elif ls[0].upper() == "BAZAAR":
-                REMOTE = "BAZAAR"
-            elif ls[0].upper() == "BZR":
-                REMOTE = "BAZAAR"
-            elif ls[0].upper() == "GIT":
-                REMOTE = "GIT"
+    for line in lines:
+        ls = line.split()
+        if len(ls) == 0:
+            continue
+        elif ls[0].lower() in protocols:
+            protocol_name = ls[0].lower()
+            protocol_args = ls[1:]
+        else:
+            dir_args = ls + protocol_args
+            backup_dirs.append( protocols[protocol_name](*dir_args, **cmd_line_options) )
 
-            #Rsync the directory
-            elif (REMOTE == "RSYNC") and (len(ls) == 1):
-                backup_dirs.append( RsyncDir(ls[0], ls[0], REMOTEUSER, REMOTEHOST) )
-
-            elif (REMOTE == "RSYNC") and (len(ls) == 2):
-                if (ls[-1].upper() == "D") :
-                    if options.NoDeleteAfter:
-                        backup_dirs.append( RsyncDir(ls[0], ls[0], REMOTEUSER, REMOTEHOST, False) )
-                    else:
-                        backup_dirs.append( RsyncDir(ls[0], ls[0], REMOTEUSER, REMOTEHOST, True) )
-                else:
-                    backup_dirs.append( RsyncDir(ls[0], ls[1], REMOTEUSER, REMOTEHOST) )
-
-            elif (REMOTE == "RSYNC") and (len(ls) == 3):
-                if (ls[-1].upper() == "D") and (not options.NoDeleteAfter):
-                    backup_dirs.append( RsyncDir(ls[0], ls[1], REMOTEUSER, REMOTEHOST, True) )
-                else:
-                    backup_dirs.append( RsyncDir(ls[0], ls[1], REMOTEUSER, REMOTEHOST, False) )
-
-            # Use Bazaar to push the directory
-            elif (REMOTE == "BAZAAR"):
-                backup_dirs.append( BazaarDir(ls[0], ls[1]) )
-
-            # Use Git to push the directory
-            elif (REMOTE == "GIT"):
-                message = ""
-                if 1 < len(ls):
-                    message = line[line.find(ls[0])+len(ls[0]):-1]
-                    message = message[message.find(ls[1]):]
-                backup_dirs.append( GitDir(ls[0], message) )
-
-            else:
-                print("\033[1;31mFailed\033[0m to add the following directory to the list of files to sync:\033[1;36m", line, "\033[0m")
-
-    #Run the backups
-    n = 0
-    while n < len(backup_dirs):
-        if n != 0:
+    # Run the backups
+    last_id = id(backup_dirs[-1])
+    for bd in backup_dirs:
+        bd.backup()
+        if id(bd) != last_id:
             print("")
-        backup_dirs[n].backup()
-        n = n + 1
     
     return
         

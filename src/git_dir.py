@@ -3,11 +3,11 @@ import time
 import subprocess
 
 class GitDir(object):
-    def __init__(self, ld, pm):
+    def __init__(self, ld, *args, **kw):
         self.localdir = ld
-        self.push_message  = str(pm)
+        self.push_message = " ".join(args)
 
-        if self.push_message != "":
+        if not self.push_message.endswith(" "):
             self.push_message = self.push_message + " "
         self.push_message = self.push_message + "(Pybackup autopush at {0})".format(time.ctime())
         return

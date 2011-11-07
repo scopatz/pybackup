@@ -3,7 +3,7 @@ import time
 import subprocess
 
 class BazaarDir(object):
-    def __init__(self, ld, pl):
+    def __init__(self, ld, pl, *args, **kw):
         self.localdir = ld
         self.pushloc  = pl
         return

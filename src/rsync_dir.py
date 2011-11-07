@@ -3,12 +3,14 @@ import time
 import subprocess
 
 class RsyncDir(object):
-    def __init__(self, ld, rd, ru, rh, df=False):
+    def __init__(self, ld, rd, df, ru, rh, *args, **kw):
         self.localdir   = ld
         self.remotedir  = rd
+
+        self.deleteflag = ((df.upper() == "D") and (not kw['NO_DELETE']))
+
         self.remoteuser = ru
         self.remotehost = rh
-        self.deleteflag = df
         return
 
     def __str__(self):
