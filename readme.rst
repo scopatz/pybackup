@@ -11,6 +11,8 @@ Currently, Pybackup supports the following file transfer systems:
   1. rsync
   2. git
   3. bzr (bazaar)
+  4. s3rsync (Amazon's S3 via s3fs and rynsc)
+  5. s3cmd (Amazon's S3 via the s3cmd utility)
 
 More transfer mechanisms (such as hg, svn, scp) could be added with ease, if
 needed.  Each of these methods require that the local host and the remote 
