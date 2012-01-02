@@ -43,7 +43,7 @@ class S3CmdDir(object):
         t1 = time.time()
 
         # Build command
-        cmd = "s3cmd -rvFH --progress"
+        cmd = "s3cmd -rvpFH --progress"
 
         if self.deleteflag:
             cmd += " --delete-removed"
