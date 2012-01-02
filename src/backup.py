@@ -3,9 +3,9 @@ import os
 import subprocess
 from optparse import OptionParser
 
+from .bzr_dir import BazaarDir
+from .git_dir import GitDir
 from .rsync_dir import RsyncDir
-from .bzr_dir   import BazaarDir
-from .git_dir   import GitDir
 from .s3_cmd_dir import S3CmdDir
 from .s3_rsync_dir import S3RsyncDir
 
@@ -47,6 +47,9 @@ def main():
         if EDITOR == "":
             print("EDITOR enviromental variable not set!")
             return
+
+        if not os.path.exists(HOME + "/.config/pybackup/"):
+            os.makedirs(HOME + "/.config/pybackup/")
 
         subprocess.call("{0} {1}/.config/pybackup/folders.txt".format(EDITOR, HOME), shell=True)
         print("Edited configuration file {0}/.config/pybackup/folders.txt".format(HOME))
