@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 import os
 import subprocess
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 from .bzr_dir import BazaarDir
 from .git_dir import GitDir
@@ -19,16 +19,21 @@ protocols = {
     }
 
 def main():
-    parser = OptionParser()
+    parser = ArgumentParser()
 
-    parser.add_option("-n", "--no-delete", action="store_true", 
+    parser.add_argument("cmd", nargs="?", default="push", 
+        help="Command to perform from: push or pull.")
+    parser.add_argument("-n", "--no-delete", action="store_true", 
         dest="NO_DELETE", default=False, 
         help="Don't deleted orphaned files on remote machince after transfer.")
-    parser.add_option("-e", "--edit", action="store_true", 
+    parser.add_argument("-e", "--edit", action="store_true", 
         dest="EDIT", default=False, 
         help="Open and edit the configuration file.")
 
-    (options, args) = parser.parse_args()
+    args = parser.parse_args()
+
+    # Validate command line options
+    assert args.cmd in set(["push", "pull"])
 
     # Initialize
     backup_dirs = []
@@ -38,10 +43,11 @@ def main():
 
     HOME = os.getenv("HOME")
 
-    cmd_line_options = {'NO_DELETE': options.NO_DELETE}
+    cmd_line_options = {'NO_DELETE': args.NO_DELETE,
+                        'CMD': args.cmd}
 
     # Editor mode
-    if options.EDIT:
+    if args.EDIT:
         EDITOR = os.getenv("EDITOR")
 
         if EDITOR == "":
