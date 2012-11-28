@@ -1,0 +1,30 @@
+#! /usr/bin/env python
+import os
+import re
+import sys
+import subprocess
+
+dig = re.compile('\d+')
+
+def main():
+    HOME = os.environ['HOME']
+    gmaildir = os.path.join(HOME, 'gmail')
+    gmailmbox = os.path.join(gmaildir, 'gmail-history.mbox')
+    n = max([int(f) for f in os.listdir(gmaildir) if dig.match(f)])
+    cmds = [['getmail', '-r', os.path.join(HOME, '.getmail.gmail')],
+            ['git', 'mailsplit', '-f'+str(n), '-d7', '-o'+gmaildir, gmailmbox],]
+    pres = [(lambda: True), (lambda: 0 < os.stat(gmailmbox).st_size)]
+
+    for cmd, pre in zip(cmds, pres):
+        if not pre():
+            sys.exit()
+        print " ".join(cmd)
+        rtn = subprocess.check_call(cmd)
+
+    with open(gmailmbox, 'w'):
+        pass
+
+if __name__ == "__main__":
+    main()
+
+

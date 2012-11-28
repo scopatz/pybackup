@@ -13,6 +13,6 @@ if __name__ == '__main__':
 	    packages=['pybackup', ],
 	    package_dir={'pybackup': 'src'}, 
 	    package_data={'': []},
-        scripts=['src/scripts/pybackup'],
+        scripts=['src/scripts/pybackup', 'src/scripts/gmail-backup'],
 	    )
 
